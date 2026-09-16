@@ -1,0 +1,965 @@
+/* ==========================================================================
+   Pure Neumorphic UI Design - Unified Material Surface (#e0e0e0)
+   Login & Signup with 3D Flip & Looping Blue Light Input Focus
+   ========================================================================== */
+
+:root {
+  /* Surface & Base Neumorphic Colors
+     Every element (page, card, sunken inputs, and raised button) shares
+     this EXACT same background color to create the true soft-clay extrusion illusion. */
+  --base-surface: #e0e0e0;
+  --bg-canvas: var(--base-surface);
+  --surface-card: var(--base-surface);
+  --surface-slot: var(--base-surface);
+  --surface-btn: var(--base-surface);
+
+  /* Precise Neumorphic Shadows for #e0e0e0 surface */
+  --shadow-dark: #bebebe;
+  --shadow-light: #ffffff;
+  --shadow-dark-intense: #a8a8a8;
+  
+  /* Debossed / Sunken (Khadda effect) Inset Shadows */
+  --shadow-inset-dark: #bebebe;
+  --shadow-inset-light: #ffffff;
+
+  /* Typography tuned for high legibility on #e0e0e0 */
+  --text-title: #2d3748;
+  --text-body: #64748b;
+  --text-phone: #1a202c;
+  --text-btn: #2d3748;
+  --text-digit: #1a202c;
+  --digit-active: #2563eb;
+  --caret-color: #2563eb;
+  --link-resend: #2563eb;
+
+  /* Accent highlights & Loop Beam */
+  --focus-ring: rgba(37, 99, 235, 0.25);
+  --error-shadow: rgba(220, 38, 38, 0.4);
+  --beam-cyan: #38bdf8;
+  --beam-blue: #2563eb;
+
+  /* Typography */
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Optional Dark Neumorphic Preset */
+[data-theme="dark"] {
+  --base-surface: #26282e;
+  --shadow-dark: #191a1e;
+  --shadow-light: #33363e;
+  --shadow-dark-intense: #141518;
+  --shadow-inset-dark: #1b1c20;
+  --shadow-inset-light: #31343c;
+  --text-title: #f1f5f9;
+  --text-body: #94a3b8;
+  --text-phone: #f8fafc;
+  --text-btn: #f1f5f9;
+  --text-digit: #f8fafc;
+  --digit-active: #60a5fa;
+  --caret-color: #60a5fa;
+  --link-resend: #60a5fa;
+  --focus-ring: rgba(96, 165, 250, 0.3);
+  --beam-cyan: #67e8f9;
+  --beam-blue: #3b82f6;
+}
+
+/* Optional Soft Blue-Gray Preset */
+[data-theme="soft-blue"] {
+  --base-surface: #e4eaf2;
+  --shadow-dark: #c0c7d1;
+  --shadow-light: #ffffff;
+  --shadow-dark-intense: #abb3be;
+  --shadow-inset-dark: #c0c7d1;
+  --shadow-inset-light: #ffffff;
+  --text-title: #1e293b;
+  --text-body: #64748b;
+  --text-phone: #0f172a;
+  --text-btn: #1e293b;
+  --text-digit: #0f172a;
+  --digit-active: #2563eb;
+  --link-resend: #2563eb;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--base-surface); /* Continuous unified surface */
+  color: var(--text-title);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow-x: hidden;
+  padding: 24px 16px;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* Main Layout Container */
+.page-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 470px;
+}
+
+/* ==========================================================================
+   3D Card Flip Perspective Container
+   ========================================================================== */
+.card-flip-container {
+  width: 100%;
+  perspective: 1400px;
+  position: relative;
+}
+
+.card-flipper {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.34, 1.25, 0.64, 1);
+}
+
+/* Flipped Left State: 3D rotation along Y axis (-180deg flips left) */
+.card-flipper.flipped {
+  transform: rotateY(-180deg);
+}
+
+.card-face {
+  grid-area: 1 / 1 / 2 / 2;
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.card-front {
+  transform: rotateY(0deg);
+  z-index: 2;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  z-index: 1;
+}
+
+.card-flipper.flipped .card-front {
+  pointer-events: none;
+}
+
+.card-flipper.flipped .card-back {
+  pointer-events: auto;
+  z-index: 3;
+}
+
+/* ==========================================================================
+   Neumorphic Main Card (Raised Plate from same background)
+   ========================================================================== */
+.neumorphic-card {
+  position: relative;
+  width: 100%;
+  background: var(--base-surface); /* EXACT SAME COLOR */
+  border-radius: 40px;
+  padding: 42px 34px 38px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: none;
+  /* Soft double outer shadows creating gentle elevation from page */
+  box-shadow: 
+    18px 18px 38px var(--shadow-dark),
+    -18px -18px 38px var(--shadow-light);
+  transition: box-shadow 0.3s ease, background 0.35s ease;
+}
+
+/* ==========================================================================
+   Top Icon Dish (Sunken circular well / khadda effect)
+   ========================================================================== */
+.icon-dish {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: var(--base-surface); /* EXACT SAME COLOR */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  border: none;
+  /* Inset box-shadow: carved/hollowed cavity into the card */
+  box-shadow: 
+    inset 5px 5px 10px var(--shadow-inset-dark),
+    inset -5px -5px 10px var(--shadow-inset-light);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.icon-dish:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    inset 6px 6px 12px var(--shadow-dark-intense),
+    inset -6px -6px 12px var(--shadow-inset-light);
+}
+
+.lock-wrapper {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.lock-image {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  border-radius: 50%;
+  filter: contrast(1.06) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lock-svg,
+.signup-top-svg {
+  width: 44px;
+  height: 44px;
+  display: block;
+}
+
+/* ==========================================================================
+   Card Header
+   ========================================================================== */
+.card-header {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.card-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-title);
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+
+.card-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-body);
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   Auth Form & Input Slot Groups
+   ========================================================================== */
+.auth-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-slot-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.slot-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 6px;
+  margin-left: 6px;
+  letter-spacing: 0.2px;
+}
+
+/* ==========================================================================
+   Neumorphic Input Box ("Khadda Effect" - Sunken Inset Shadows)
+   ========================================================================== */
+.neumorphic-input-box {
+  position: relative;
+  width: 100%;
+  height: 52px;
+  background: var(--base-surface); /* EXACT SAME COLOR #e0e0e0 */
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border: none;
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-inset-dark),
+    inset -4px -4px 8px var(--shadow-inset-light);
+  cursor: text;
+  transition: box-shadow 0.25s ease, transform 0.2s ease;
+  overflow: visible;
+}
+
+.neumorphic-input-box:hover {
+  box-shadow: 
+    inset 5px 5px 10px var(--shadow-inset-dark),
+    inset -5px -5px 10px var(--shadow-inset-light);
+}
+
+/* Focused State: enhanced sunken depth + subtle ambient glow */
+.neumorphic-input-box:focus-within,
+.neumorphic-input-box.is-focused {
+  box-shadow: 
+    inset 5px 5px 10px var(--shadow-dark-intense),
+    inset -5px -5px 10px var(--shadow-inset-light),
+    0 0 16px rgba(37, 99, 235, 0.16);
+}
+
+/* Error State */
+.neumorphic-input-box.error {
+  box-shadow: 
+    inset 4px 4px 8px var(--error-shadow),
+    inset -4px -4px 8px var(--shadow-inset-light),
+    0 0 12px rgba(220, 38, 38, 0.25);
+}
+
+/* Input Fields */
+.neumorphic-input-box input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-title);
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  padding: 0 8px;
+  z-index: 2;
+}
+
+.neumorphic-input-box input::placeholder {
+  color: var(--text-body);
+  opacity: 0.65;
+  font-weight: 500;
+}
+
+/* Input Icons */
+.slot-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-body);
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  transition: color 0.25s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.slot-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.neumorphic-input-box:focus-within .slot-icon {
+  color: var(--digit-active);
+}
+
+/* Password Visibility Toggle */
+.toggle-password-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-body);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: color 0.2s ease, transform 0.15s ease;
+  z-index: 3;
+  outline: none;
+  padding: 0;
+}
+
+.toggle-password-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.toggle-password-btn:hover {
+  color: var(--digit-active);
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   THIN BLUE LIGHT MOVING AROUND THE BOX IN A CONTINUOUS LOOP
+   ========================================================================== */
+.beam-border-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border-radius: 18px;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 4;
+}
+
+.beam-rect {
+  x: 1.5px;
+  y: 1.5px;
+  width: calc(100% - 3px);
+  height: calc(100% - 3px);
+  rx: 16px;
+  ry: 16px;
+  fill: none;
+  stroke: var(--beam-cyan);
+  stroke-width: 2.2px;
+  stroke-linecap: round;
+  stroke-dasharray: 24 76;
+  stroke-dashoffset: 0;
+  filter: 
+    drop-shadow(0 0 3px var(--beam-blue))
+    drop-shadow(0 0 6px var(--beam-cyan));
+}
+
+/* When the input box is selected/focused to enter data */
+.neumorphic-input-box:focus-within .beam-border-svg,
+.neumorphic-input-box.is-focused .beam-border-svg {
+  opacity: 1;
+}
+
+.neumorphic-input-box:focus-within .beam-rect,
+.neumorphic-input-box.is-focused .beam-rect {
+  animation: loopBlueLight 2.2s linear infinite;
+}
+
+@keyframes loopBlueLight {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* ==========================================================================
+   Form Options Row (Remember Me, Checkboxes, Forgot Password)
+   ========================================================================== */
+.form-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 4px 0 16px 0;
+  font-size: 13px;
+}
+
+.custom-checkbox-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+}
+
+.custom-checkbox-wrapper input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  width: 0;
+  height: 0;
+}
+
+.neumorphic-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--base-surface);
+  box-shadow: 
+    inset 2.5px 2.5px 5px var(--shadow-inset-dark),
+    inset -2.5px -2.5px 5px var(--shadow-inset-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: transparent;
+  flex-shrink: 0;
+}
+
+.custom-checkbox-wrapper input:checked + .neumorphic-checkbox {
+  color: #ffffff;
+  background: var(--digit-active);
+  box-shadow: 
+    inset 1px 1px 2px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(37, 99, 235, 0.4);
+}
+
+.check-mark-svg {
+  width: 11px;
+  height: 9px;
+}
+
+.checkbox-label {
+  font-size: 13px;
+  color: var(--text-body);
+  font-weight: 600;
+}
+
+.text-link {
+  background: transparent;
+  border: none;
+  color: var(--digit-active);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.2s ease, text-decoration 0.2s ease;
+  text-decoration: none;
+}
+
+.text-link:hover {
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Feedback Message
+   ========================================================================== */
+.feedback-message {
+  min-height: 22px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.feedback-message.error {
+  color: #dc2626;
+  animation: fadeIn 0.2s ease;
+}
+
+.feedback-message.success {
+  color: #16a34a;
+  animation: fadeIn 0.2s ease;
+}
+
+.feedback-message.hint {
+  color: var(--text-body);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Shake Animation on Form Error */
+.shake-animation {
+  animation: shakeCard 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shakeCard {
+  10%, 90% { transform: translate3d(-3px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+  40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+/* ==========================================================================
+   SUBMIT BUTTON (Raised - "Ubhrah Hua" Neumorphic Button)
+   Shares the EXACT SAME background color with dual soft outer box-shadows.
+   ========================================================================== */
+.verify-button {
+  width: 100%;
+  height: 56px;
+  border-radius: 18px;
+  background: var(--base-surface); /* EXACT SAME COLOR #e0e0e0 */
+  border: none;
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--text-btn);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  /* Regular outer box-shadow with soft light & dark edges (realistically raised) */
+  box-shadow: 
+    8px 8px 18px var(--shadow-dark),
+    -8px -8px 18px var(--shadow-light);
+  transition: 
+    transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+    color 0.2s ease;
+  margin-top: 6px;
+  margin-bottom: 20px;
+  outline: none;
+  user-select: none;
+}
+
+/* Hover: Lifts higher with expanded soft shadows */
+.verify-button:hover {
+  transform: translateY(-2.5px);
+  box-shadow: 
+    11px 11px 24px var(--shadow-dark),
+    -11px -11px 24px var(--shadow-light);
+  color: var(--digit-active);
+}
+
+/* Active / Pressed: Presses completely INTO the surface */
+.verify-button:active,
+.verify-button.pressed {
+  transform: translateY(2px);
+  box-shadow: 
+    inset 5px 5px 10px var(--shadow-inset-dark),
+    inset -5px -5px 10px var(--shadow-inset-light);
+}
+
+.verify-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* Button ripple */
+.button-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.12);
+  transform: scale(0);
+  pointer-events: none;
+  animation: rippleEffect 0.55s linear;
+}
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Loading spinner */
+.button-loader {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid rgba(45, 55, 72, 0.2);
+  border-top-color: var(--text-title);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-left: 10px;
+}
+
+.verify-button.loading .button-loader {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Switch Cards Wrapper (Don't have an account? Sign Up / Log In)
+   ========================================================================== */
+.card-switch-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.switch-prompt {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-body);
+}
+
+.resend-link {
+  background: var(--base-surface);
+  border: none;
+  color: var(--link-resend);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 14px;
+  box-shadow: 
+    4px 4px 10px var(--shadow-dark),
+    -4px -4px 10px var(--shadow-light);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  outline: none;
+}
+
+.resend-link:hover {
+  box-shadow: 
+    6px 6px 14px var(--shadow-dark),
+    -6px -6px 14px var(--shadow-light);
+  transform: translateY(-1.5px);
+}
+
+.resend-link:active {
+  box-shadow: 
+    inset 3px 3px 6px var(--shadow-inset-dark),
+    inset -3px -3px 6px var(--shadow-inset-light);
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   Surface Palette Switcher
+   ========================================================================== */
+.palette-switcher {
+  margin-top: 28px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.palette-btn {
+  background: var(--base-surface);
+  border: none;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-body);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark),
+    -4px -4px 8px var(--shadow-light);
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.palette-btn:hover {
+  transform: translateY(-1.5px);
+  color: var(--text-title);
+  box-shadow: 
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
+}
+
+.palette-btn.active {
+  color: var(--digit-active);
+  box-shadow: 
+    inset 3px 3px 6px var(--shadow-inset-dark),
+    inset -3px -3px 6px var(--shadow-inset-light);
+}
+
+/* ==========================================================================
+   Success Modal Dialog (Pure Neumorphic)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--base-surface); /* EXACT SAME COLOR */
+  border-radius: 36px;
+  padding: 40px 30px;
+  text-align: center;
+  border: none;
+  box-shadow: 
+    20px 20px 50px var(--shadow-dark),
+    -20px -20px 50px var(--shadow-light);
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-card {
+  transform: scale(1) translateY(0);
+}
+
+.success-icon-well {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  margin: 0 auto 22px auto;
+  background: var(--base-surface); /* EXACT SAME COLOR */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-inset-dark),
+    inset -4px -4px 8px var(--shadow-inset-light);
+}
+
+.check-svg {
+  width: 44px;
+  height: 44px;
+}
+
+.check-circle {
+  stroke: #16a34a;
+  stroke-width: 2.5;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: strokeCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.check-tick {
+  stroke: #16a34a;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: strokeCheck 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+}
+
+@keyframes strokeCircle {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes strokeCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-title);
+  margin-bottom: 8px;
+}
+
+.modal-desc {
+  font-size: 14px;
+  color: var(--text-body);
+  line-height: 1.5;
+  margin-bottom: 26px;
+}
+
+.modal-button {
+  width: 100%;
+  height: 50px;
+  border-radius: 18px;
+  background: var(--base-surface); /* EXACT SAME COLOR */
+  border: none;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #16a34a;
+  cursor: pointer;
+  box-shadow: 
+    6px 6px 14px var(--shadow-dark),
+    -6px -6px 14px var(--shadow-light);
+  transition: all 0.2s ease;
+}
+
+.modal-button:hover {
+  box-shadow: 
+    8px 8px 18px var(--shadow-dark),
+    -8px -8px 18px var(--shadow-light);
+  transform: translateY(-1.5px);
+}
+
+.modal-button:active {
+  box-shadow: 
+    inset 3px 3px 6px var(--shadow-inset-dark),
+    inset -3px -3px 6px var(--shadow-inset-light);
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   Toast Notification
+   ========================================================================== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #1e293b;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 480px) {
+  .neumorphic-card {
+    padding: 34px 20px 30px 20px;
+    border-radius: 30px;
+  }
+  .card-title {
+    font-size: 22px;
+  }
+  .neumorphic-input-box {
+    height: 48px;
+    padding: 0 12px;
+  }
+  .verify-button {
+    height: 50px;
+    font-size: 14px;
+  }
+  .palette-switcher {
+    gap: 8px;
+  }
+  .palette-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
